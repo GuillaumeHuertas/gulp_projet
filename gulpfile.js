@@ -3,6 +3,7 @@ const gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     sass = require('gulp-sass'),
     nano = require('gulp-cssnano'),
+    less = require('gulp-less'),
     pipeline = require('readable-stream').pipeline,
     concat = require('gulp-concat'),
     pleeease = require('gulp-pleeease'),
@@ -15,6 +16,9 @@ gulp.task('default', function(done) {
     done();
 });
 
+/*
+    Transpile le js ES6 en ES5, concat les fichiers js et le minifie
+ */
 gulp.task('Js', function() {
     return gulp.src('gulp/js/*.js')
         // rend le js compatible avec tout les navigateurs (ES5)
@@ -29,6 +33,9 @@ gulp.task('Js', function() {
         .pipe(gulp.dest('dist/js'));
 });
 
+/*
+    transforme le CSS3 en CSS2 et le minifie
+ */
 gulp.task('Css', function() {
     return pipeline(
         gulp.src('gulp/css/*.css'),
@@ -38,11 +45,26 @@ gulp.task('Css', function() {
     )
 });
 
+/*
+    Transforme le scss en css et le nano
+ */
 gulp.task('Scss', function() {
     return pipeline(
         gulp.src('gulp/scss/*.scss'),
         sass(),
         nano(),
+        gulp.dest('gulp/css')
+    )
+});
+
+/*
+    Transforme le less en css
+ */
+gulp.task('Less', function() {
+    return pipeline(
+        gulp.src('gulp/less/*.less'),
+        less(),
+        concat('style3.css'),
         gulp.dest('gulp/css')
     )
 });
@@ -61,6 +83,7 @@ gulp.task('connect', function(){
 
     gulp.watch('gulp/js/*.js', gulp.series('Js'));
     gulp.watch('gulp/css/*.css', gulp.series('Css'));
+    gulp.watch('gulp/less/*.less', gulp.series('Less'));
     gulp.watch('gulp/scss/*.scss', gulp.series('Scss'));
 });
 
