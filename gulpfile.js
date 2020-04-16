@@ -4,17 +4,14 @@ const gulp = require('gulp'),
     sass = require('gulp-sass'),
     nano = require('gulp-cssnano'),
     less = require('gulp-less'),
+    imagemin = require('gulp-imagemin'),
+    image = require('gulp-image'),
+    sourcemaps = require('gulp-sourcemaps'),
     pipeline = require('readable-stream').pipeline,
     concat = require('gulp-concat'),
     pleeease = require('gulp-pleeease'),
     connect = require('gulp-connect'),
     browserSync = require('browser-sync');
-
-// default permet d'appeler de lancer la tâche avec simplement "gulp" comme commande
-gulp.task('default', function(done) {
-    console.log('Gulp first task');
-    done();
-});
 
 /*
     Transpile le js ES6 en ES5, concat les fichiers js et le minifie
@@ -39,8 +36,11 @@ gulp.task('Js', function() {
 gulp.task('Css', function() {
     return pipeline(
         gulp.src('gulp/css/*.css'),
+        // Permet de reset le css pour avoir tous les fichiers séparer dans le navigateur (pour le dev)
+        sourcemaps.init(),
         pleeease(),
         concat('all.min.css'),
+        sourcemaps.write('.'),
         gulp.dest('dist/css')
     )
 });
@@ -63,9 +63,30 @@ gulp.task('Scss', function() {
 gulp.task('Less', function() {
     return pipeline(
         gulp.src('gulp/less/*.less'),
-        less(),
+        less().on('error', function(error) {
+            console.log(error.message);
+        }),
         concat('style3.css'),
         gulp.dest('gulp/css')
+    )
+});
+
+// gulp.task('Img', function() {
+//     return pipeline(
+//         gulp.src('gulp/img/*.{png,jpeg,jpg,giff,svg}'),
+//         imagemin(),
+//         gulp.dest('dist/img')
+//     )
+// });
+
+/*
+    Change la résolution des images
+ */
+gulp.task('Img', function() {
+    return pipeline(
+        gulp.src('gulp/img/*.{png,jpeg,jpg,giff,svg}'),
+        image(),
+        gulp.dest('dist/img')
     )
 });
 
@@ -80,11 +101,22 @@ gulp.task('connect', function(){
     gulp.watch('**/*.{php,html}').on('change', function() {
         browserSync.reload();
     });
-
-    gulp.watch('gulp/js/*.js', gulp.series('Js'));
-    gulp.watch('gulp/css/*.css', gulp.series('Css'));
-    gulp.watch('gulp/less/*.less', gulp.series('Less'));
-    gulp.watch('gulp/scss/*.scss', gulp.series('Scss'));
+    gulp.watch('gulp/js/*.js', gulp.series('Js')).on('change', function() {
+        browserSync.reload();
+    });
+    gulp.watch('gulp/css/*.css', gulp.series('Css')).on('change', function(event) {
+        console.warn('Le fichier ' + event + ' a été modifié');
+        browserSync.reload();
+    });
+    gulp.watch('gulp/scss/*.scss', gulp.series('Scss')).on('change', function() {
+        browserSync.reload();
+    });
+    gulp.watch('gulp/less/*.less', gulp.series('Less')).on('change', function() {
+        browserSync.reload();
+    });
+    gulp.watch('gulp/img/*.{png,jpeg,jpg,giff,svg}', gulp.series('Img')).on('change', function() {
+        browserSync.reload();
+    });
 });
 
 gulp.task('watch', function() {
@@ -92,6 +124,9 @@ gulp.task('watch', function() {
         console.log('Le fichier ' + event + ' a été modifié');
     })
 });
+
+// default permet d'appeler de lancer la tâche avec simplement "gulp" comme commande
+gulp.task('default', gulp.series('connect'));
 
 /*
     install gulp-babel :
