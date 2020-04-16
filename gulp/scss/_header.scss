@@ -1,0 +1,8 @@
+// Les fichiers saas préfixé d'un _ sont uniquement importé et jamais utilisé directement dans le html
+
+header {
+  padding: 50px;
+  // Variable importé dans la feuille de style appelante
+  background-color: $primaryColor;
+  margin-bottom: 500px;
+}

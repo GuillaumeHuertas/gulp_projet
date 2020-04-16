@@ -1,6 +1,8 @@
 const gulp = require('gulp'),
     babel = require('gulp-babel'),
     uglify = require('gulp-uglify'),
+    sass = require('gulp-sass'),
+    nano = require('gulp-cssnano'),
     pipeline = require('readable-stream').pipeline,
     concat = require('gulp-concat'),
     pleeease = require('gulp-pleeease'),
@@ -36,6 +38,15 @@ gulp.task('Css', function() {
     )
 });
 
+gulp.task('Scss', function() {
+    return pipeline(
+        gulp.src('gulp/scss/*.scss'),
+        sass(),
+        nano(),
+        gulp.dest('gulp/css')
+    )
+});
+
 gulp.task('connect', function(){
     connect.server({}, function() {
         browserSync({
@@ -50,6 +61,7 @@ gulp.task('connect', function(){
 
     gulp.watch('gulp/js/*.js', gulp.series('Js'));
     gulp.watch('gulp/css/*.css', gulp.series('Css'));
+    gulp.watch('gulp/scss/*.scss', gulp.series('Scss'));
 });
 
 gulp.task('watch', function() {
@@ -71,6 +83,9 @@ gulp.task('watch', function() {
 
     install uglify :
     npm install --save-dev gulp-uglify
+
+    install cssnano :
+    npm install gulp-cssnano --save-dev
 
 
 

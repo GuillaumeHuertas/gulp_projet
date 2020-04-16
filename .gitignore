@@ -2,3 +2,5 @@
 /package-lock.json
 /dist/css/all.css
 /dist/css/all.min.css
+/gulp/css/all.min.css
+/gulp/css/main.css
