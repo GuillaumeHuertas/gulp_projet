@@ -9,10 +9,20 @@
   "author": "Guillaume Huertas",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
     "browser-sync": "^2.26.7",
     "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-connect": "^5.7.0",
-    "gulp-connect-php": "^1.0.3"
+    "gulp-connect-php": "^1.0.3",
+    "gulp-pleeease": "^2.0.2",
+    "gulp-uglify": "^3.0.2"
+  },
+  "dependencies": {
+    "readable-stream": "latest"
   }
 }

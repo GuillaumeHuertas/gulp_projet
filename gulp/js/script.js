@@ -1,2 +1,2 @@
 const fruits = "pomme";
-const légumes = "lentilles";
+let légumes = "lentilles";
